@@ -79,6 +79,7 @@ export function LicensesPage() {
               <tr>
                 <th className="px-4 py-4 text-slate-400 text-xs font-bold uppercase">License Key</th>
                 <th className="px-4 py-4 text-slate-400 text-xs font-bold uppercase">Plan</th>
+                <th className="px-4 py-4 text-slate-400 text-xs font-bold uppercase">Devices</th>
                 <th className="px-4 py-4 text-slate-400 text-xs font-bold uppercase">Status</th>
                 <th className="px-4 py-4 text-slate-400 text-xs font-bold uppercase text-right">Actions</th>
               </tr>
@@ -96,6 +97,11 @@ export function LicensesPage() {
                   </td>
                   <td className="px-4 py-4">
                     <span className="text-slate-300 text-sm font-medium capitalize">{license.plan}</span>
+                  </td>
+                  <td className="px-4 py-4">
+                    <span className="text-slate-300 text-sm font-medium">
+                      {license.device_count || 0} / {license.max_devices || '∞'}
+                    </span>
                   </td>
                   <td className="px-4 py-4">
                     <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${license.revoked ? 'bg-red-500/10 text-red-400' : 'bg-green-500/10 text-green-400'}`}>
@@ -175,4 +181,4 @@ export function LicensesPage() {
       )}
     </div>
   );
-}
+              }

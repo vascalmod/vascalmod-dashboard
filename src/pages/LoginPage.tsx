@@ -47,7 +47,7 @@ export function LoginPage() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="bg-slate-800 rounded-lg shadow-2xl p-8">
-          <h1 className="text-3xl font-bold text-white mb-2">License Manager</h1>
+          <h1 className="text-3xl font-bold text-white mb-2">VascalVip License Manager</h1>
           <p className="text-slate-400 mb-8">Admin Dashboard</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">

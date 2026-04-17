@@ -166,7 +166,7 @@ export function LogsPage() {
                   <th className="hidden md:table-cell text-left py-3 px-3 md:px-4 text-slate-300 font-semibold text-sm md:text-base">
                     IP
                   </th>
-                  <th className="hidden lg:table-cell text-left py-3 px-3 md:px-4 text-slate-300 font-semibold text-sm md:text-base">
+                  <th className="text-left py-3 px-3 md:px-4 text-slate-300 font-semibold text-sm md:text-base">
                     Location
                   </th>
                   <th className="text-left py-3 px-3 md:px-4 text-slate-300 font-semibold text-sm md:text-base">
@@ -189,8 +189,8 @@ export function LogsPage() {
                     <td className="hidden md:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
                       {log.ip}
                     </td>
-                    <td className="hidden lg:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      {log.location?.city}, {log.location?.country}
+                    <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
+                      {log.location ? `${log.location.city || 'Unknown'}, ${log.location.country || 'Unknown'}` : 'N/A'}
                     </td>
                     <td className="py-3 px-3 md:px-4">
                       <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${statusColor(log.status)}`}>

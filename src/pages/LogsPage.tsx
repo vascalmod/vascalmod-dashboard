@@ -16,20 +16,41 @@ interface Log {
   timestamp: string;
 }
 
-// Helper to match common country names to flag emojis
-const getFlagEmoji = (countryName: string) => {
-  if (!countryName || countryName === 'Unknown') return '🌍';
+// Helper to match country names to 2-letter ISO codes for FlagCDN
+const getCountryCode = (countryName: string) => {
+  if (!countryName || countryName === 'Unknown') return null;
+  
   const map: Record<string, string> = {
-    'United States': '🇺🇸', 'United Kingdom': '🇬🇧', 'Canada': '🇨🇦',
-    'Germany': '🇩🇪', 'France': '🇫🇷', 'Australia': '🇦🇺', 'Japan': '🇯🇵',
-    'Brazil': '🇧🇷', 'India': '🇮🇳', 'China': '🇨🇳', 'Russia': '🇷🇺',
-    'South Korea': '🇰🇷', 'Italy': '🇮🇹', 'Spain': '🇪🇸', 'Mexico': '🇲🇽',
-    'Netherlands': '🇳🇱', 'Sweden': '🇸🇪', 'Switzerland': '🇨🇭',
-    'Poland': '🇵🇱', 'Turkey': '🇹🇷', 'Indonesia': '🇮🇩', 'Philippines': '🇵🇭',
-    'Vietnam': '🇻🇳', 'Thailand': '🇹🇭', 'Malaysia': '🇲🇾', 'Singapore': '🇸🇬',
-    'Local Dev Country': '💻', 'Local': '💻', 'Localhost': '💻'
+    'Philippines': 'ph',
+    'United States': 'us',
+    'United Kingdom': 'gb',
+    'Canada': 'ca',
+    'Germany': 'de',
+    'France': 'fr',
+    'Australia': 'au',
+    'Japan': 'jp',
+    'Brazil': 'br',
+    'India': 'in',
+    'China': 'cn',
+    'Russia': 'ru',
+    'South Korea': 'kr',
+    'Italy': 'it',
+    'Spain': 'es',
+    'Mexico': 'mx',
+    'Netherlands': 'nl',
+    'Sweden': 'se',
+    'Switzerland': 'ch',
+    'Poland': 'pl',
+    'Turkey': 'tr',
+    'Indonesia': 'id',
+    'Vietnam': 'vn',
+    'Thailand': 'th',
+    'Malaysia': 'my',
+    'Singapore': 'sg',
+    // Add more countries here as needed
   };
-  return map[countryName] || '🌍';
+  
+  return map[countryName];
 };
 
 export function LogsPage() {
@@ -202,10 +223,23 @@ export function LogsPage() {
                       {log.ip}
                     </td>
                     <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      {/* Fixed Location N/A bug & Added Flags! */}
                       <div className="flex items-center gap-2">
-                        <span className="text-base" title={log.country}>{getFlagEmoji(log.country)}</span>
-                        <span>{log.city && log.city !== 'Unknown' ? `${log.city}, ${log.country}` : log.country || 'Unknown'}</span>
+                        {/* Render FlagCDN icon or fallback Globe */}
+                        {getCountryCode(log.country) ? (
+                          <img 
+                            src={`https://flagcdn.com/w20/${getCountryCode(log.country)}.png`} 
+                            alt={log.country}
+                            title={log.country}
+                            className="w-5 h-auto rounded-[2px] shadow-sm"
+                          />
+                        ) : (
+                          <span className="text-base" title={log.country || 'Local/Unknown'}>🌍</span>
+                        )}
+                        <span>
+                          {log.city && log.city !== 'Unknown' 
+                            ? `${log.city}, ${log.country}` 
+                            : log.country || 'Unknown'}
+                        </span>
                       </div>
                     </td>
                     <td className="py-3 px-3 md:px-4">

@@ -14,10 +14,13 @@ export function LicensesPage() {
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  
+  // UPDATED: Default plan is 1D, added custom_days state
   const [formData, setFormData] = useState({ 
-    plan: 'standard', 
+    plan: '1D', 
     max_devices: '3', 
-    strict_mode: false 
+    strict_mode: false,
+    custom_days: '365'
   });
 
   useEffect(() => { loadLicenses(); }, []);
@@ -50,9 +53,18 @@ export function LicensesPage() {
   const handleCreateLicense = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await apiClient.createLicense(formData.plan, parseInt(formData.max_devices), formData.strict_mode);
+      // Pass custom_days only if plan is "custom"
+      const expirationDays = formData.plan === 'custom' ? parseInt(formData.custom_days) : undefined;
+      
+      await apiClient.createLicense(
+        formData.plan, 
+        parseInt(formData.max_devices), 
+        formData.strict_mode,
+        expirationDays
+      );
+      
       setShowCreateModal(false);
-      setFormData({ plan: 'standard', max_devices: '3', strict_mode: false });
+      setFormData({ plan: '1D', max_devices: '3', strict_mode: false, custom_days: '365' });
       loadLicenses();
     } catch (err) { alert('Creation failed'); }
   };
@@ -107,7 +119,6 @@ export function LicensesPage() {
                   </td>
                   <td className="px-4 py-4">
                     <span className="text-slate-300 text-sm font-medium">
-                      {/* Fixed device count */}
                       {getDeviceCount(license)} / {license.max_devices || '∞'}
                     </span>
                   </td>
@@ -149,12 +160,28 @@ export function LicensesPage() {
                   onChange={(e) => setFormData({...formData, plan: e.target.value})} 
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-blue-500 outline-none"
                 >
-                  <option value="trial">Trial (24h)</option>
-                  <option value="standard">Standard (30d)</option>
-                  <option value="premium">Premium (90d)</option>
-                  <option value="lifetime">Lifetime</option>
+                  {/* UPDATED OPTIONS */}
+                  <option value="1D">1 Day</option>
+                  <option value="3D">3 Days</option>
+                  <option value="7D">7 Days</option>
+                  <option value="30D">30 Days</option>
+                  <option value="custom">Custom Days</option>
                 </select>
               </div>
+
+              {/* DYNAMIC CUSTOM DAYS INPUT */}
+              {formData.plan === 'custom' && (
+                <div>
+                  <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Number of Days</label>
+                  <input 
+                    type="number"
+                    value={formData.custom_days}
+                    onChange={(e) => setFormData({...formData, custom_days: e.target.value})}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white outline-none focus:border-blue-500"
+                    min="1"
+                  />
+                </div>
+              )}
 
               <div>
                 <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Device Limit</label>

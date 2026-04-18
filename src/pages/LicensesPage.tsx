@@ -15,7 +15,7 @@ export function LicensesPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   
-  // UPDATED: Default plan is 1D, added custom_days state
+  // Default values
   const [formData, setFormData] = useState({ 
     plan: '1D', 
     max_devices: '3', 
@@ -53,14 +53,15 @@ export function LicensesPage() {
   const handleCreateLicense = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Pass custom_days only if plan is "custom"
+      // 🔥 Extract custom days if the plan is "custom"
       const expirationDays = formData.plan === 'custom' ? parseInt(formData.custom_days) : undefined;
       
+      // 🔥 Pass expirationDays as the 4th argument
       await apiClient.createLicense(
         formData.plan, 
         parseInt(formData.max_devices), 
         formData.strict_mode,
-        expirationDays
+        expirationDays 
       );
       
       setShowCreateModal(false);
@@ -115,7 +116,8 @@ export function LicensesPage() {
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="text-slate-300 text-sm font-medium capitalize">{license.plan}</span>
+                    {/* 🔥 Removed the "capitalize" class so "Custom 365D" renders perfectly as written */}
+                    <span className="text-slate-300 text-sm font-medium">{license.plan}</span>
                   </td>
                   <td className="px-4 py-4">
                     <span className="text-slate-300 text-sm font-medium">
@@ -160,7 +162,6 @@ export function LicensesPage() {
                   onChange={(e) => setFormData({...formData, plan: e.target.value})} 
                   className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:border-blue-500 outline-none"
                 >
-                  {/* UPDATED OPTIONS */}
                   <option value="1D">1 Day</option>
                   <option value="3D">3 Days</option>
                   <option value="7D">7 Days</option>
@@ -169,7 +170,7 @@ export function LicensesPage() {
                 </select>
               </div>
 
-              {/* DYNAMIC CUSTOM DAYS INPUT */}
+              {/* Dynamic Input for Custom Days */}
               {formData.plan === 'custom' && (
                 <div>
                   <label className="block text-xs font-bold text-slate-500 uppercase mb-2">Number of Days</label>

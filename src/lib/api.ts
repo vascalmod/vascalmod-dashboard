@@ -38,12 +38,16 @@ export const apiClient = {
 
   // Licenses
   getLicenses: () => api.get('/api/licenses'),
-  createLicense: (plan: string, maxDevices: number, strictMode: boolean) =>
+  
+  // UPDATED: Added expirationDays
+  createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number) =>
     api.post('/api/licenses?action=create', {
       plan,
       max_devices: maxDevices,
       strict_mode: strictMode,
+      expiration_days: expirationDays,
     }),
+    
   revokeLicense: (licenseKey: string) =>
     api.post('/api/licenses?action=revoke', { license_key: licenseKey }),
 

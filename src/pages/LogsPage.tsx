@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '../lib/api';
 import { format } from 'date-fns';
 import { RefreshCw } from 'lucide-react';
+import ReactCountryFlag from 'react-country-flag';
 
 interface Log {
   id: string;
@@ -9,48 +10,33 @@ interface Log {
   hwid: string;
   ip: string;
   status: string;
-  // DB columns are flat, not nested in location object
   city: string;
   country: string;
   isp: string;
   timestamp: string;
 }
 
-// Helper to match country names to 2-letter ISO codes for FlagCDN
-const getCountryCode = (countryName: string) => {
-  if (!countryName || countryName === 'Unknown') return null;
+// Ensure we get a 2-letter ISO code for the flag component
+const getCountryCode = (country: string) => {
+  if (!country || country === 'Unknown' || country === 'Local' || country === 'Localhost') return '';
   
+  // If your DB already holds 'PH', 'US', etc., use it directly!
+  if (country.length === 2) {
+    return country.toUpperCase();
+  }
+
+  // Fallback map just in case the DB has full names like 'Philippines'
   const map: Record<string, string> = {
-    'Philippines': 'ph',
-    'United States': 'us',
-    'United Kingdom': 'gb',
-    'Canada': 'ca',
-    'Germany': 'de',
-    'France': 'fr',
-    'Australia': 'au',
-    'Japan': 'jp',
-    'Brazil': 'br',
-    'India': 'in',
-    'China': 'cn',
-    'Russia': 'ru',
-    'South Korea': 'kr',
-    'Italy': 'it',
-    'Spain': 'es',
-    'Mexico': 'mx',
-    'Netherlands': 'nl',
-    'Sweden': 'se',
-    'Switzerland': 'ch',
-    'Poland': 'pl',
-    'Turkey': 'tr',
-    'Indonesia': 'id',
-    'Vietnam': 'vn',
-    'Thailand': 'th',
-    'Malaysia': 'my',
-    'Singapore': 'sg',
-    // Add more countries here as needed
+    'Philippines': 'PH', 'United States': 'US', 'United Kingdom': 'GB',
+    'Canada': 'CA', 'Germany': 'DE', 'France': 'FR', 'Australia': 'AU',
+    'Japan': 'JP', 'Brazil': 'BR', 'India': 'IN', 'China': 'CN',
+    'Russia': 'RU', 'South Korea': 'KR', 'Italy': 'IT', 'Spain': 'ES',
+    'Mexico': 'MX', 'Netherlands': 'NL', 'Sweden': 'SE', 'Switzerland': 'CH',
+    'Poland': 'PL', 'Turkey': 'TR', 'Indonesia': 'ID', 'Vietnam': 'VN',
+    'Thailand': 'TH', 'Malaysia': 'MY', 'Singapore': 'SG'
   };
   
-  return map[countryName];
+  return map[country] || '';
 };
 
 export function LogsPage() {
@@ -138,7 +124,7 @@ export function LogsPage() {
           </label>
           <input
             type="text"
-            placeholder="e.g., United States"
+            placeholder="e.g., PH or United States"
             value={filters.country}
             onChange={(e) => {
               setFilters({ ...filters, country: e.target.value });
@@ -208,47 +194,54 @@ export function LogsPage() {
                 </tr>
               </thead>
               <tbody>
-                {logs.map((log) => (
-                  <tr key={log.id} className="border-b border-slate-700/50">
-                    <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm whitespace-nowrap">
-                      {format(new Date(log.timestamp), 'MMM dd HH:mm')}
-                    </td>
-                    <td className="py-3 px-3 md:px-4 text-slate-100 font-mono text-xs md:text-sm">
-                      {log.license_key.substring(0, 12)}...
-                    </td>
-                    <td className="hidden sm:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      {log.hwid.substring(0, 10)}...
-                    </td>
-                    <td className="hidden md:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      {log.ip}
-                    </td>
-                    <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      <div className="flex items-center gap-2">
-                        {/* Render FlagCDN icon or fallback Globe */}
-                        {getCountryCode(log.country) ? (
-                          <img 
-                            src={`https://flagcdn.com/w20/${getCountryCode(log.country)}.png`} 
-                            alt={log.country}
-                            title={log.country}
-                            className="w-5 h-auto rounded-[2px] shadow-sm"
-                          />
-                        ) : (
-                          <span className="text-base" title={log.country || 'Local/Unknown'}>🌍</span>
-                        )}
-                        <span>
-                          {log.city && log.city !== 'Unknown' 
-                            ? `${log.city}, ${log.country}` 
-                            : log.country || 'Unknown'}
+                {logs.map((log) => {
+                  const countryCode = getCountryCode(log.country);
+                  
+                  return (
+                    <tr key={log.id} className="border-b border-slate-700/50">
+                      <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm whitespace-nowrap">
+                        {format(new Date(log.timestamp), 'MMM dd HH:mm')}
+                      </td>
+                      <td className="py-3 px-3 md:px-4 text-slate-100 font-mono text-xs md:text-sm">
+                        {log.license_key.substring(0, 12)}...
+                      </td>
+                      <td className="hidden sm:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
+                        {log.hwid.substring(0, 10)}...
+                      </td>
+                      <td className="hidden md:table-cell py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
+                        {log.ip}
+                      </td>
+                      <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
+                        <div className="flex items-center gap-2">
+                          {/* Render react-country-flag or fallback */}
+                          {countryCode ? (
+                            <ReactCountryFlag 
+                              countryCode={countryCode} 
+                              svg 
+                              style={{
+                                width: '1.4em',
+                                height: '1.4em',
+                              }} 
+                              title={log.country} 
+                            />
+                          ) : (
+                            <span className="text-base" title={log.country || 'Local/Unknown'}>🌍</span>
+                          )}
+                          <span>
+                            {log.city && log.city !== 'Unknown' 
+                              ? `${log.city}, ${log.country}` 
+                              : log.country || 'Unknown'}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="py-3 px-3 md:px-4">
+                        <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${statusColor(log.status)}`}>
+                          {log.status}
                         </span>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 md:px-4">
-                      <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${statusColor(log.status)}`}>
-                        {log.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

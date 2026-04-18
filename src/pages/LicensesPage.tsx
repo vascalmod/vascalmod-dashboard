@@ -2,6 +2,13 @@ import { useEffect, useState } from 'react';
 import { apiClient } from '../lib/api';
 import { Plus, RefreshCw, Copy, Check, X, Trash2 } from 'lucide-react';
 
+const getDeviceCount = (license: any) => {
+  if (typeof license.device_count === 'number') return license.device_count;
+  if (Array.isArray(license.devices)) return license.devices[0]?.count || 0;
+  if (license.devices && typeof license.devices.count === 'number') return license.devices.count;
+  return 0;
+};
+
 export function LicensesPage() {
   const [licenses, setLicenses] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,7 +107,8 @@ export function LicensesPage() {
                   </td>
                   <td className="px-4 py-4">
                     <span className="text-slate-300 text-sm font-medium">
-                      {license.device_count || 0} / {license.max_devices || '∞'}
+                      {/* Fixed device count */}
+                      {getDeviceCount(license)} / {license.max_devices || '∞'}
                     </span>
                   </td>
                   <td className="px-4 py-4">
@@ -181,4 +189,4 @@ export function LicensesPage() {
       )}
     </div>
   );
-              }
+}

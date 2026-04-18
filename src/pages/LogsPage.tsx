@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '../lib/api';
 import { format } from 'date-fns';
-import { RefreshCw, Globe } from 'lucide-react';
-
-interface LocationData {
-  country: string;
-  city: string;
-  isp: string;
-  ip: string;
-}
+import { RefreshCw } from 'lucide-react';
 
 interface Log {
   id: string;
@@ -16,9 +9,28 @@ interface Log {
   hwid: string;
   ip: string;
   status: string;
-  location: LocationData;
+  // DB columns are flat, not nested in location object
+  city: string;
+  country: string;
+  isp: string;
   timestamp: string;
 }
+
+// Helper to match common country names to flag emojis
+const getFlagEmoji = (countryName: string) => {
+  if (!countryName || countryName === 'Unknown') return '🌍';
+  const map: Record<string, string> = {
+    'United States': '🇺🇸', 'United Kingdom': '🇬🇧', 'Canada': '🇨🇦',
+    'Germany': '🇩🇪', 'France': '🇫🇷', 'Australia': '🇦🇺', 'Japan': '🇯🇵',
+    'Brazil': '🇧🇷', 'India': '🇮🇳', 'China': '🇨🇳', 'Russia': '🇷🇺',
+    'South Korea': '🇰🇷', 'Italy': '🇮🇹', 'Spain': '🇪🇸', 'Mexico': '🇲🇽',
+    'Netherlands': '🇳🇱', 'Sweden': '🇸🇪', 'Switzerland': '🇨🇭',
+    'Poland': '🇵🇱', 'Turkey': '🇹🇷', 'Indonesia': '🇮🇩', 'Philippines': '🇵🇭',
+    'Vietnam': '🇻🇳', 'Thailand': '🇹🇭', 'Malaysia': '🇲🇾', 'Singapore': '🇸🇬',
+    'Local Dev Country': '💻', 'Local': '💻', 'Localhost': '💻'
+  };
+  return map[countryName] || '🌍';
+};
 
 export function LogsPage() {
   const [logs, setLogs] = useState<Log[]>([]);
@@ -190,7 +202,11 @@ export function LogsPage() {
                       {log.ip}
                     </td>
                     <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm">
-                      {log.location ? `${log.location.city || 'Unknown'}, ${log.location.country || 'Unknown'}` : 'N/A'}
+                      {/* Fixed Location N/A bug & Added Flags! */}
+                      <div className="flex items-center gap-2">
+                        <span className="text-base" title={log.country}>{getFlagEmoji(log.country)}</span>
+                        <span>{log.city && log.city !== 'Unknown' ? `${log.city}, ${log.country}` : log.country || 'Unknown'}</span>
+                      </div>
                     </td>
                     <td className="py-3 px-3 md:px-4">
                       <span className={`px-2 md:px-3 py-1 rounded-full text-xs font-semibold ${statusColor(log.status)}`}>

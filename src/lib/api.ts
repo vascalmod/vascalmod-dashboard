@@ -39,6 +39,8 @@ export const apiClient = {
   // Licenses
   getLicenses: () => api.get('/api/licenses'),
   
+  getStats: () => api.get('/api/stats'),
+  
   // 🔥 FIXED: Added expirationDays parameter to send to the backend
   createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number) =>
     api.post('/api/licenses?action=create', {

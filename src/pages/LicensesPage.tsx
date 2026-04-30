@@ -1,8 +1,8 @@
-// src/pages/LicensesPage.tsx
 import React, { useEffect, useState } from 'react';
-import { fetchLicensesDashboard } from '../lib/api';
+// Import your Axios client
+import { apiClient } from '../lib/api'; 
 
-// 1. Define strict types to match your updated backend response
+// Define strict types to match your backend response
 interface Device {
   id: string;
   hwid: string;
@@ -29,15 +29,22 @@ export default function LicensesPage() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetchLicensesDashboard();
-        // Extract the array from the { success: true, data: [...] } response
-        if (response.success && response.data) {
-          setLicenses(response.data);
+        // Use your existing Axios setup
+        const response = await apiClient.getLicenses();
+        
+        // Axios stores the payload in `response.data`
+        // Your backend returns `{ success: true, data: [...] }`
+        const payload = response.data;
+
+        if (payload.success && payload.data) {
+          setLicenses(payload.data);
         } else {
           throw new Error('Invalid data format received from API');
         }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error occurred.');
+      } catch (err: any) {
+        // Handle Axios errors cleanly
+        const errorMessage = err.response?.data?.error || err.message || 'Unknown error occurred.';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

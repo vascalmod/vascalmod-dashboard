@@ -199,8 +199,8 @@ export function LogsPage() {
                   return (
                     <tr key={log.id} className="border-b border-slate-700/50">
                       <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm whitespace-nowrap">
-                        {new Date(log.timestamp).toLocaleString('en-US', { timeZone: 'UTC', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })}
-                        <span className="text-slate-500 ml-1">UTC</span>
+                        {new Date(log.timestamp).toLocaleString('en-PH', { timeZone: 'Asia/Manila', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })}
+                        <span className="text-slate-500 ml-1">PHT</span>
                       </td>
                       <td className="py-3 px-3 md:px-4 text-slate-100 font-mono text-xs md:text-sm">
                         {log.license_key.substring(0, 12)}...

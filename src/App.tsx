@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import LoginPage from './pages/LoginPage';
+import { LoginPage }  from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import LicensesPage from './pages/LicensesPage';
 import { LogsPage } from './pages/LogsPage';

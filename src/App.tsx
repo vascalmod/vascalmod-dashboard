@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/auth';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { LoginPage } from './pages/LoginPage';
-import { DashboardPage } from './pages/DashboardPage';
-import { LicensesPage } from './pages/LicensesPage';
+import LoginPage from './pages/LoginPage';
+import DashboardPage from './pages/DashboardPage';
+import LicensesPage from './pages/LicensesPage';
 import { LogsPage } from './pages/LogsPage';
 import { LogOut, Menu, LayoutDashboard, Key, FileText, X } from 'lucide-react';
 import { useState } from 'react';

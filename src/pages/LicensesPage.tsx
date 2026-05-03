@@ -113,9 +113,13 @@ export default function LicensesPage() {
                       {license.devices.map((device) => (
                         <tr key={device.id} className="hover:bg-slate-700/30 transition-colors">
                           <td className="px-4 py-3 font-mono text-xs text-slate-400">{device.hwid}</td>
-                          <td className="px-4 py-3">{new Date(device.activated_at).toLocaleString()}</td>
+                          <td className="px-4 py-3">
+                            {new Date(device.activated_at).toLocaleString('en-US', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'medium' })}
+                            <span className="text-xs text-slate-500 ml-1">UTC</span>
+                          </td>
                           <td className="px-4 py-3 font-medium text-slate-200">
-                            {new Date(device.expires_at).toLocaleString()}
+                            {new Date(device.expires_at).toLocaleString('en-US', { timeZone: 'UTC', dateStyle: 'medium', timeStyle: 'medium' })}
+                            <span className="text-xs text-slate-500 ml-1">UTC</span>
                           </td>
                           <td className="px-4 py-3 text-center">
                             <span className={`px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wide ${

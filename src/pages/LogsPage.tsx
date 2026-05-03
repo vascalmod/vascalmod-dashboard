@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { apiClient } from '../lib/api';
-import { format } from 'date-fns';
 import { RefreshCw } from 'lucide-react';
 import ReactCountryFlag from 'react-country-flag';
 
@@ -200,7 +199,8 @@ export function LogsPage() {
                   return (
                     <tr key={log.id} className="border-b border-slate-700/50">
                       <td className="py-3 px-3 md:px-4 text-slate-300 text-xs md:text-sm whitespace-nowrap">
-                        {format(new Date(log.timestamp), 'MMM dd HH:mm')}
+                        {new Date(log.timestamp).toLocaleString('en-US', { timeZone: 'UTC', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false })}
+                        <span className="text-slate-500 ml-1">UTC</span>
                       </td>
                       <td className="py-3 px-3 md:px-4 text-slate-100 font-mono text-xs md:text-sm">
                         {log.license_key.substring(0, 12)}...

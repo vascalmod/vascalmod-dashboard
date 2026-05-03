@@ -4,8 +4,9 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { LoginPage }  from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
 import LicensesPage from './pages/LicensesPage';
+import CreateLicensePage from './pages/CreateLicensePage';
 import { LogsPage } from './pages/LogsPage';
-import { LogOut, Menu, LayoutDashboard, Key, FileText, X } from 'lucide-react';
+import { LogOut, Menu, LayoutDashboard, Key, FileText, X, PlusCircle } from 'lucide-react';
 import { useState } from 'react';
 
 function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -16,6 +17,7 @@ function AdminLayout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { href: '/admin/licenses', label: 'Licenses', icon: Key },
+    { href: '/admin/create-license', label: 'Create License', icon: PlusCircle },
     { href: '/admin/logs', label: 'Logs', icon: FileText },
   ];
 
@@ -94,6 +96,7 @@ export default function App() {
         <Route path="/admin/login" element={<LoginPage />} />
         <Route path="/admin/dashboard" element={<ProtectedRoute><AdminLayout><DashboardPage /></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/licenses" element={<ProtectedRoute><AdminLayout><LicensesPage /></AdminLayout></ProtectedRoute>} />
+        <Route path="/admin/create-license" element={<ProtectedRoute><AdminLayout><CreateLicensePage /></AdminLayout></ProtectedRoute>} />
         <Route path="/admin/logs" element={<ProtectedRoute><AdminLayout><LogsPage /></AdminLayout></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>

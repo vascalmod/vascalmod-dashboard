@@ -42,12 +42,14 @@ export const apiClient = {
   getStats: () => api.get('/api/stats'),
   
   // 🔥 FIXED: Added expirationDays parameter to send to the backend
-  createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number) =>
+  createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number, hours?: number, minutes?: number) =>
     api.post('/api/licenses?action=create', {
       plan,
       max_devices: maxDevices,
       strict_mode: strictMode,
-      expiration_days: expirationDays, // Sends the custom days payload
+      expiration_days: expirationDays,
+      expiration_hours: hours,
+      expiration_minutes: minutes,
     }),
     
   revokeLicense: (licenseKey: string) =>

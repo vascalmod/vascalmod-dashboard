@@ -41,8 +41,7 @@ export const apiClient = {
   
   getStats: () => api.get('/api/stats'),
   
-  // 🔥 FIXED: Added expirationDays parameter to send to the backend
-  createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number, hours?: number, minutes?: number) =>
+  createLicense: (plan: string, maxDevices: number, strictMode: boolean, expirationDays?: number, hours?: number, minutes?: number, prefix?: string, name?: string, features?: string) =>
     api.post('/api/licenses?action=create', {
       plan,
       max_devices: maxDevices,
@@ -50,10 +49,25 @@ export const apiClient = {
       expiration_days: expirationDays,
       expiration_hours: hours,
       expiration_minutes: minutes,
+      prefix,
+      name,
+      features,
     }),
     
   revokeLicense: (licenseKey: string) =>
     api.post('/api/licenses?action=revoke', { license_key: licenseKey }),
+
+  lockLicense: (licenseKey: string) =>
+    api.post('/api/licenses?action=lock', { license_key: licenseKey }),
+
+  unlockLicense: (licenseKey: string) =>
+    api.post('/api/licenses?action=unlock', { license_key: licenseKey }),
+
+  resetDevices: (licenseKey: string) =>
+    api.post('/api/licenses?action=reset-devices', { license_key: licenseKey }),
+
+  removeDevice: (deviceId: string, licenseKey: string) =>
+    api.post('/api/licenses?action=remove-device', { device_id: deviceId, license_key: licenseKey }),
 
   // Logs
   getLogs: (limit = 50, offset = 0, status?: string, country?: string) =>

@@ -7,6 +7,9 @@ export default function CreateLicensePage() {
   const [customDays, setCustomDays] = useState(0);
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
+  const [prefix, setPrefix] = useState('');
+  const [name, setName] = useState('');
+  const [features, setFeatures] = useState('');
   const [creating, setCreating] = useState(false);
   const [createdKey, setCreatedKey] = useState('');
   const [error, setError] = useState('');
@@ -22,7 +25,10 @@ export default function CreateLicensePage() {
         false,
         customDays,
         hours,
-        minutes
+        minutes,
+        prefix,
+        name,
+        features
       );
       const payload = response.data;
       if (payload.success && payload.data) {
@@ -126,6 +132,55 @@ export default function CreateLicensePage() {
           </div>
         </div>
 
+        {/* Name */}
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Name <span className="text-slate-500">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="e.g. VIP User License"
+            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500"
+          />
+        </div>
+
+        {/* Key Prefix */}
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Key Prefix <span className="text-slate-500">(optional)</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-500 font-mono text-sm">VSCL-</span>
+            <input
+              type="text"
+              value={prefix}
+              onChange={(e) => setPrefix(e.target.value.toUpperCase().replace(/[^A-Z0-9_-]/g, ''))}
+              placeholder="e.g. TRIAL-12H-50D"
+              className="flex-1 px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm focus:outline-none focus:border-blue-500 font-mono"
+            />
+            <span className="text-slate-500 font-mono text-sm">-XXXXXX</span>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">
+            Preview: <span className="font-mono">VSCL-{prefix || '...'}-XXXXXX</span>
+          </p>
+        </div>
+
+        {/* Features */}
+        <div>
+          <label className="block text-sm font-medium text-slate-300 mb-2">
+            Features <span className="text-slate-500">(optional JSON)</span>
+          </label>
+          <textarea
+            value={features}
+            onChange={(e) => setFeatures(e.target.value)}
+            placeholder='e.g. {"max_players": 10, "premium": true, "region": "global"}'
+            rows={3}
+            className="w-full px-4 py-3 bg-slate-700 border border-slate-600 rounded-lg text-white text-sm font-mono focus:outline-none focus:border-blue-500 resize-none"
+          />
+        </div>
+
         {/* Max Devices */}
         <div>
           <label className="block text-sm font-medium text-slate-300 mb-2">
@@ -143,6 +198,12 @@ export default function CreateLicensePage() {
 
         {/* Summary */}
         <div className="bg-slate-700/50 rounded-lg p-4 border border-slate-600">
+          {name && (
+            <p className="text-sm text-slate-300">
+              Name:{' '}
+              <span className="text-white font-semibold">{name}</span>
+            </p>
+          )}
           <p className="text-sm text-slate-300">
             Duration:{' '}
             <span className="text-white font-semibold">
@@ -155,6 +216,18 @@ export default function CreateLicensePage() {
             Devices:{' '}
             <span className="text-white font-semibold">{maxDevices}</span>
           </p>
+          {prefix && (
+            <p className="text-sm text-slate-300 mt-1">
+              Key Prefix:{' '}
+              <span className="text-white font-semibold font-mono">{prefix}</span>
+            </p>
+          )}
+          {features && (
+            <p className="text-sm text-slate-300 mt-1">
+              Features:{' '}
+              <span className="text-white font-semibold font-mono text-xs">{features}</span>
+            </p>
+          )}
         </div>
 
         {/* Error */}
